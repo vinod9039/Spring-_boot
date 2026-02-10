@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirm OTP</title>
+    <style>
+        button {
+            color: green;
+        }
+        #time{
+            padding:0;
+            margin:0;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+
+<form action="/confirmOTP" method="get">
+
+    <input type="number" name="otp" placeholder="Enter OTP" required>
+    <br><br>
+
+    <!-- Hidden email field -->
+    <input type="hidden" name="email" th:value="${useremail}">
+    <p id="time">OTP valid 5 minits</p>
+    <button type="submit">Submit</button>
+
+    <br><br>
+    <p th:if="${invalid}">Invalid OTP</p>
+    <p th:if="${verify}" th:text="${verify}"></p>
+
+</form>
+
+</body>
+</html>

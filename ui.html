@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+
+    <style>
+        body{
+            display: flex;
+            justify-content: center;
+            padding-top: 25px;
+            font-family: Arial, sans-serif;
+        }
+
+        #main-div{
+            background-color: cadetblue;
+            width: 320px;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 7px 7px 7px gray;
+        }
+
+        h1{
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        #container{
+            border: 2px solid red;
+            border-bottom-right-radius: 10px;
+            border-top-left-radius: 10px;
+            padding: 15px;
+        }
+
+        form{
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label{
+            font-weight: bold;
+        }
+
+        input{
+            width: 100%;
+            padding: 6px;
+            text-align: center;
+            border-radius: 4px;
+            border: 1px solid #444;
+        }
+
+        p{
+            color: red;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        #but,
+        #google{
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        button{
+            background-color: rgb(44, 26, 246);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover{
+            background-color: rgb(30, 15, 200);
+        }
+
+        .google-btn{
+            display: inline-block;
+            text-decoration: none;
+            background-color: #db4437;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 6px;
+        }
+
+        .google-btn:hover{
+            background-color: #c23321;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="main-div">
+    <h1>Sign Up</h1>
+
+    <div id="container">
+        <form action="/sendotp" method="get">
+
+            <div>
+                <label for="user">User Name</label>ss
+                <input type="text" name="username" id="user"
+                       placeholder="Enter user name" required>
+            </div>
+
+            <div>
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email"
+                       placeholder="Enter email id" required>
+                <p th:if="${present}">Email already exists</p>
+            </div>s
+
+            <div>
+                <label for="pass">Password</label>
+                <input type="password" name="password" id="pass"
+                       placeholder="Enter password" minlength="6" required>
+            </div>
+
+            <div id="but">
+                <button type="submit">Sign Up</button>
+            </div>
+
+        </form>
+
+        <div id="google">
+            <a href="/password" class="google-btn">Google Sign Up</a>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
