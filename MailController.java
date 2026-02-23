@@ -16,7 +16,6 @@ public class MailController {
     public String Sendmail()
     {
 
-      //  System.out.println("SEND MAIL");
         emailservice.sendSimplemail();
         return "Email send";
     }

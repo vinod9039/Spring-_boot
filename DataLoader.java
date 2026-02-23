@@ -25,7 +25,7 @@ public class DataLoader implements CommandLineRunner {
         users.setEnabled(true);
 
         Roles roles = new Roles();
-        roles.setName("USER");
+        roles.setName("USER"); 
 
         users.setRoles(Set.of(roles));
          userRepositry.save(users);
