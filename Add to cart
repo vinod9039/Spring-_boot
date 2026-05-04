@@ -1,0 +1,39 @@
+ @PostMapping("/cart/addToCart")
+    public String AddToCart(Long user_id, Long menu_id, Long restaurant_id, RedirectAttributes redirectAttributes, Model model) {
+        Optional<UserMasters> userMasters = userMasterRepository.findById(user_id);
+        if (userMasters.isPresent()) {
+            MenuItem item = menuItemRepository.findById(menu_id)
+                    .orElseThrow(() -> new RuntimeException("Menu item not found"));
+            UserMasters user = userMasters.get();
+
+            List<MenuItem> menuItems = menuItemRepository.findAll();
+
+            Optional<Cart> existingItem = cartRepository.findByUserMaster_IdAndMenuItem_IdAndStatus(user_id, menu_id, false);
+
+            if (existingItem.isPresent()) {
+                Cart cart = existingItem.get();
+                cart.setQuantity(cart.getQuantity() + 1);
+                cartRepository.save(cart);
+            } else {
+
+                ;
+                Cart cart = new Cart();
+                cart.setMenuItem(item);
+                cart.setUserMaster(user);
+                cart.setQuantity(1);
+                cart.setStatus(false);
+                cart.setRestaurant(item.getRestaurant());
+                cartRepository.save(cart);
+
+            }
+
+            model.addAttribute("menuItems", menuItems);
+            model.addAttribute("user", user);
+            redirectAttributes.addFlashAttribute("success",true);
+            return "redirect:/user/home";
+
+        }
+
+        return null;
+
+    }
