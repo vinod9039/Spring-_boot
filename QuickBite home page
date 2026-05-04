@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>QuickBite — Premium Food Delivery</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap"
+          rel="stylesheet">
+
+    <style>
+        :root {
+            --orange:       #ff6b00;
+            --orange-light: #ff8c38;
+            --orange-pale:  #fff3ea;
+            --orange-glow:  rgba(255,107,0,0.12);
+            --bg:           #ffffff;
+            --bg2:          #fafaf8;
+            --bg3:          #f5f3ef;
+            --card-bg:      #ffffff;
+            --border:       rgba(0,0,0,0.08);
+            --border-md:    rgba(0,0,0,0.13);
+            --text:         #1a1a1a;
+            --text-sec:     #555;
+            --muted:        #999;
+            --radius:       18px;
+            --radius-sm:    10px;
+            --shadow-sm:    0 2px 12px rgba(0,0,0,0.07);
+            --shadow-md:    0 8px 28px rgba(0,0,0,0.1);
+            --shadow-lg:    0 20px 48px rgba(0,0,0,0.13);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            padding-top: 78px;
+        }
+
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg3); }
+        ::-webkit-scrollbar-thumb { background: var(--orange); border-radius: 3px; }
+
+        /* ══════════════ NAVBAR ══════════════ */
+        .navbar {
+            background: #ff6b00;
+            box-shadow: 0 4px 20px rgba(255,107,0,0.25);
+            padding: 10px 0;
+        }
+
+        .brand-logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.5);
+        }
+
+        .brand-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: -0.3px;
+        }
+
+        /* Search */
+        .search-wrap {
+            position: relative;
+            max-width: 380px;
+            width: 100%;
+        }
+
+        .search-wrap input {
+            width: 100%;
+            background: rgba(255,255,255,0.18);
+            border: 1.5px solid rgba(255,255,255,0.3);
+            border-radius: 50px;
+            padding: 10px 48px 10px 20px;
+            color: #fff;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-wrap input::placeholder { color: rgba(255,255,255,0.65); }
+
+        .search-wrap input:focus {
+            background: rgba(255,255,255,0.28);
+            border-color: rgba(255,255,255,0.7);
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.15);
+        }
+
+        .search-wrap button {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.25);
+            border: none;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .search-wrap button:hover { background: rgba(255,255,255,0.4); }
+
+        /* Nav icons */
+        .nav-right { display: flex; align-items: center; gap: 8px; }
+
+        .nav-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.15);
+            border: 1.5px solid rgba(255,255,255,0.25);
+            color: #fff;
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.2s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .nav-icon:hover {
+            background: rgba(255,255,255,0.3);
+            border-color: rgba(255,255,255,0.5);
+            color: #fff;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #FFD600;
+            color: #111;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--orange);
+        }
+
+        /* Profile pill */
+        .profile-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.15);
+            border: 1.5px solid rgba(255,255,255,0.25);
+            border-radius: 50px;
+            padding: 5px 14px 5px 5px;
+            text-decoration: none;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .profile-pill:hover {
+            background: rgba(255,255,255,0.28);
+            border-color: rgba(255,255,255,0.5);
+            color: #fff;
+        }
+
+        .profile-pill img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.7);
+        }
+
+        /* Dropdown */
+        .dropdown-menu {
+            background: #fff;
+            border: 1px solid var(--border-md);
+            border-radius: var(--radius-sm);
+            padding: 8px;
+            min-width: 180px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .dropdown-item {
+            color: var(--text);
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-size: 14px;
+            transition: background 0.15s;
+        }
+
+        .dropdown-item:hover { background: var(--orange-pale); color: var(--orange); }
+        .dropdown-item.text-danger { color: #dc3545 !important; }
+        .dropdown-item.text-danger:hover { background: #fff0f0; }
+        .dropdown-divider { border-color: var(--border); margin: 6px 0; }
+
+        /* Toggler */
+        .navbar-toggler { border: none; padding: 4px; }
+        .navbar-toggler:focus { box-shadow: none; }
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255,255,255,1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        /* Mobile collapse */
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                background: #e85f00;
+                border-radius: 0 0 16px 16px;
+                padding: 14px 16px 18px;
+                margin-top: 6px;
+            }
+
+            .search-wrap { max-width: 100%; margin-bottom: 12px; }
+
+            .nav-right {
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .profile-pill .name-text { display: none; }
+        }
+
+        /* ══════════════ HERO ══════════════ */
+        .hero {
+            position: relative;
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: url('/images/img_1.png') center/cover no-repeat;
+            animation: heroZoom 18s ease-in-out infinite alternate;
+        }
+
+        @keyframes heroZoom {
+            from { transform: scale(1); }
+            to   { transform: scale(1.06); }
+        }
+
+        /* Orange-tinted dark overlay — keeps orange warmth */
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background:
+            linear-gradient(135deg,
+            /*            rgba(180,60,0,0.82) 0%,*/
+            /*            rgba(255,107,0,0.6) 40%,*/
+            rgba(0,0,0,0.55) 100%
+            );
+        }
+
+        /* Decorative orb */
+        .hero-orb {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: rgba(255,180,80,0.12);
+            filter: blur(90px);
+            top: -100px;
+            right: -80px;
+            pointer-events: none;
+            animation: orbFloat 10s ease-in-out infinite;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translateY(0); }
+            50%       { transform: translateY(-28px); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 0 16px;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(8px);
+            border-radius: 50px;
+            padding: 6px 16px;
+            font-size: 13px;
+            color: #fff;
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+
+        .hero-badge .dot {
+            width: 7px; height: 7px;
+            background: #FFD600;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: 0.5; transform: scale(1.5); }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.6rem, 6vw, 5rem);
+            font-weight: 900;
+            color: #fff;
+            line-height: 1.08;
+            letter-spacing: -1px;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.3);
+        }
+
+        .hero h1 em {
+            color: #FFD600;
+            font-style: normal;
+        }
+
+        .hero p {
+            font-size: clamp(1rem, 2vw, 1.18rem);
+            color: rgba(255,255,255,0.82);
+            max-width: 480px;
+            line-height: 1.7;
+            margin-bottom: 36px;
+        }
+
+        .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+
+        .btn-hero-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #fff;
+            color: var(--orange);
+            padding: 14px 30px;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 700;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.25s;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .btn-hero-primary:hover {
+            background: var(--orange-pale);
+            transform: translateY(-2px);
+            box-shadow: 0 14px 32px rgba(0,0,0,0.25);
+            color: var(--orange);
+        }
+
+        .btn-hero-ghost {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: transparent;
+            color: #fff;
+            padding: 13px 26px;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 500;
+            text-decoration: none;
+            border: 1.5px solid rgba(255,255,255,0.45);
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .btn-hero-ghost:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.7);
+            color: #fff;
+        }
+
+        /* Hero stats */
+        .hero-stats { display: flex; gap: 36px; margin-top: 52px; flex-wrap: wrap; }
+
+        .stat-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #FFD600;
+            line-height: 1;
+        }
+
+        .stat-num sup { font-size: 1rem; }
+        .stat-label { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 4px; }
+
+        /* ══════════════ SECTION HEADER ══════════════ */
+        .section-tag {
+            display: inline-block;
+            background: var(--orange-pale);
+            border: 1px solid rgba(255,107,0,0.2);
+            color: var(--orange);
+            border-radius: 50px;
+            padding: 4px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .section-header h2 {
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            font-weight: 900;
+            color: var(--text);
+            letter-spacing: -0.5px;
+        }
+
+        .section-header p { color: var(--muted); font-size: 15px; margin-top: 10px; }
+
+        /* ══════════════ FOOD SECTION ══════════════ */
+        .food-section {
+            background: var(--bg2);
+            padding: 90px 0;
+        }
+
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        @media (max-width: 480px) {
+            .food-grid { grid-template-columns: 1fr; }
+        }
+
+        .food-card {
+            background: #fff;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+        }
+
+        .food-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 44px rgba(255,107,0,0.12), 0 6px 16px rgba(0,0,0,0.08);
+            border-color: rgba(255,107,0,0.25);
+        }
+
+        .food-img-wrap {
+            position: relative;
+            overflow: hidden;
+            height: 210px;
+        }
+
+        .food-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .food-card:hover .food-img { transform: scale(1.07); }
+
+        .card-body-custom {
+            padding: 18px 20px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .food-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .food-price {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--orange);
+        }
+
+        .add-cart-btn {
+            width: 100%;
+            background: var(--orange-pale);
+            border: 1.5px solid rgba(255,107,0,0.25);
+            color: var(--orange);
+            border-radius: var(--radius-sm);
+            padding: 11px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.22s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            margin-top: auto;
+        }
+
+        .add-cart-btn:hover {
+            background: var(--orange);
+            border-color: var(--orange);
+            color: #fff;
+            box-shadow: 0 8px 20px rgba(255,107,0,0.3);
+        }
+
+        .add-cart-btn:active { transform: scale(0.97); }
+
+        /* ══════════════ FEATURES ══════════════ */
+        .features-section {
+            background: #fff;
+            padding: 90px 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .feature-card {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 36px 28px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--orange), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-md);
+            border-color: rgba(255,107,0,0.2);
+            background: #fff;
+        }
+
+        .feature-card:hover::after { opacity: 1; }
+
+        .feature-icon-wrap {
+            width: 64px;
+            height: 64px;
+            background: var(--orange-pale);
+            border: 1.5px solid rgba(255,107,0,0.2);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin: 0 auto 20px;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover .feature-icon-wrap {
+            background: var(--orange);
+            border-color: var(--orange);
+            transform: scale(1.08);
+        }
+
+        .feature-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        .feature-desc { color: var(--text-sec); font-size: 14px; line-height: 1.65; }
+
+        /* ══════════════ FOOTER ══════════════ */
+        footer {
+            background: var(--orange);
+            padding: 28px 0;
+            text-align: center;
+        }
+
+        .footer-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        footer p { color: rgba(255,255,255,0.75); font-size: 13px; }
+
+        /* ══════════════ MODALS ══════════════ */
+        .modal-content {
+            background: #fff;
+            border: 1px solid var(--border-md);
+            border-radius: var(--radius);
+            color: var(--text);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid var(--border);
+            padding: 18px 24px;
+            background: var(--orange-pale);
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+
+        .modal-title { font-size: 17px; font-weight: 600; color: var(--orange); }
+
+        .modal-body { padding: 24px; }
+        .modal-footer { border-top: 1px solid var(--border); padding: 14px 24px; }
+
+        .profile-avatar-modal {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--orange);
+            box-shadow: 0 0 0 6px var(--orange-pale);
+        }
+
+        .profile-field-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            color: var(--muted);
+            margin-bottom: 2px;
+            font-weight: 600;
+        }
+
+        .profile-field-value {
+            font-size: 15px;
+            color: var(--text);
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 12px;
+        }
+
+        .profile-field-value:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+        /* Edit form */
+        #updateProfile .form-control,
+        #updateProfile input[type=text],
+        #updateProfile input[type=email],
+        #updateProfile input[type=file] {
+            background: var(--bg2);
+            border: 1.5px solid var(--border-md);
+            color: var(--text);
+            border-radius: var(--radius-sm);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            padding: 10px 14px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        #updateProfile .form-control:focus,
+        #updateProfile input:focus {
+            border-color: var(--orange);
+            box-shadow: 0 0 0 3px var(--orange-glow);
+            background: #fff;
+            outline: none;
+        }
+
+        #updateProfile label {
+            color: var(--text-sec);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .btn-orange {
+            background: var(--orange);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 24px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-orange:hover {
+            background: var(--orange-light);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(255,107,0,0.35);
+        }
+
+        .btn-success-custom {
+            background: #1a7a4a;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 9px 20px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-success-custom:hover { background: #1e9458; color: #fff; }
+
+        .btn-outline-cancel {
+            background: transparent;
+            color: var(--text-sec);
+            border: 1.5px solid var(--border-md);
+            border-radius: 10px;
+            padding: 9px 20px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-outline-cancel:hover { background: var(--bg3); }
+
+        #previewImage {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--orange);
+        }
+
+        /* ══════════════ MOBILE ══════════════ */
+        @media (max-width: 768px) {
+            .hero { min-height: 80vh; }
+            .hero h1 { font-size: clamp(2.2rem, 8vw, 3rem); }
+            .hero-stats { gap: 24px; }
+            .stat-num { font-size: 1.7rem; }
+            .food-section, .features-section { padding: 64px 0; }
+            .feature-card { padding: 28px 20px; }
+            .modal-dialog { margin: 10px; }
+        }
+
+        [data-aos] { transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important; }
+
+        /* ══════════════ POPUP ══════════════ */
+        #popup {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.65); backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 99999; animation: fadeIn 0.3s ease; padding: 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; } to { opacity: 1; }
+        }
+
+        #popup .popup-box {
+            background: #fff;
+            border: 1.5px solid rgba(255,107,0,0.25);
+            padding: 44px 36px 36px;
+            border-radius: var(--radius);
+            text-align: center;
+            max-width: 420px; width: 100%;
+            box-shadow: 0 24px 64px rgba(255,107,0,0.18), 0 8px 24px rgba(0,0,0,0.12);
+            animation: popupScale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative; overflow: hidden;
+        }
+
+        @keyframes popupScale {
+            from { opacity: 0; transform: scale(0.85); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        /* Orange top accent bar — matches feature-card hover */
+        #popup .popup-box::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, var(--orange), var(--orange-light), var(--orange));
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+
+        /* Orange glow orb — same as hero orb feel */
+        #popup .popup-box::after {
+            content: '';
+            position: absolute;
+            width: 280px; height: 280px;
+            border-radius: 50%;
+            background: var(--orange-glow);
+            filter: blur(60px);
+            top: -60px; right: -60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        #popup dotlottie-wc {
+            width: 140px; height: 140px;
+            margin: 0 auto 16px;
+            position: relative; z-index: 1;
+        }
+
+        #popup h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.55rem;
+            font-weight: 900;
+            color: var(--text);
+            margin-bottom: 8px;
+            position: relative; z-index: 1;
+        }
+
+        #popup p.popup-sub {
+            color: var(--text-sec);
+            font-size: 14px;
+            margin-bottom: 24px;
+            position: relative; z-index: 1;
+        }
+
+        #popup .OkBtn {
+            position: relative; z-index: 1;
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 36px;
+            background: var(--orange);
+            color: #fff;
+            border: none;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.25s;
+            box-shadow: 0 8px 22px rgba(255,107,0,0.35);
+            letter-spacing: 0.3px;
+        }
+
+        #popup .OkBtn:hover {
+            background: var(--orange-light);
+            transform: translateY(-2px);
+            box-shadow: 0 14px 32px rgba(255,107,0,0.45);
+        }
+
+        #popup .OkBtn:active { transform: scale(0.97); }
+
+        /* Remove old confetti (optional rakh sakte ho) */
+        .confetti-wrap { display: none; }
+
+
+/*        category*/
+        .category-item {
+            margin-right: 76px;
+        }
+        /* Horizontal scroll */
+        .category-scroll {
+            overflow-x: auto;
+            white-space: nowrap;
+            padding-bottom: 10px;
+        }
+
+        /* Hide scrollbar (clean UI) */
+        .category-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Category images */
+        .category-img {
+            width: 110px;
+            height: 110px;
+            object-fit: cover;
+            transition: 0.3s;
+        }
+
+        /* Hover effect */
+        .category-img:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ══════════════ NAVBAR ══════════════ -->
+<nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container">
+
+        <a class="navbar-brand d-flex align-items-center gap-2 text-decoration-none" href="#">
+            <img th:src="@{/images/img.png}" alt="Logo" class="brand-logo">
+            <span class="brand-name">QuickBite</span>
+        </a>
+
+        <!-- Mobile: cart + toggler -->
+        <div class="d-flex d-lg-none align-items-center gap-2 ms-auto">
+            <form th:action="@{/user/cart}" method="post" style="margin:0">
+                <input type="hidden" name="user_id" th:value="${user.id}">
+                <button type="submit" class="nav-icon">
+                    <i class="bi bi-bag"></i>
+                    <span class="cart-badge" id="cartCountMob">0</span>
+                </button>
+            </form>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+
+            <!-- Search -->
+            <div class="search-wrap mx-auto">
+
+                <input class="form-control me-2"
+                       type="text"
+                       id="searchBox"
+                       placeholder="Search food or restaurants...">
+
+                <button class="btn">
+                    <i class="bi bi-search"></i>
+                </button>
+
+<!--                <form class="search-wrap mx-auto" action="/user/food/search" method="post">-->
+<!--                    <input type="text" name="name" th:value="${name}" placeholder="Search for food...">-->
+<!--                    <button type="submit"><i class="bi bi-search"></i></button>-->
+<!--                </form>-->
+
+                <!-- Dropdown results -->
+                <div id="results"
+                     style="position:absolute; top:45px; width:100%; background:white; border:1px solid #ddd; border-radius:8px; display:none; max-height:300px; overflow-y:auto; z-index:1000;">
+                </div>
+
+            </div>
+
+            <!-- Cart -->
+            <div class="nav-right ms-lg-3 mt-3 mt-lg-0">
+
+                <a th:href="@{/user/home}" class="nav-icon" title="Home">
+                    <i class="bi bi-house-door"></i>
+                </a>
+
+                <form th:action="@{/user/cart}" method="post" style="margin:0" class="d-none d-lg-block">
+                    <input type="hidden" name="user_id" th:value="${user.id}">
+                    <button type="submit" class="nav-icon" title="Cart">
+                        <i class="bi bi-bag"></i>
+                        <span class="cart-badge p-0" id="cartCountDesk" th:text="${cartCount}" >0</span>
+                    </button>
+                </form>
+
+                <div class="dropdown">
+                    <a class="profile-pill dropdown-toggle" href="#" data-bs-toggle="dropdown"
+                       style="text-decoration:none">
+                        <img th:src="@{'/user/users/image/' + ${user.id}}" alt="profile">
+                        <span class="name-text" th:text="${user.name}"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#myProfileModal">👤
+                            My Profile</a></li>
+                        <li><a class="dropdown-item" th:href="@{/user/vieworders}">📦 My Orders</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item text-danger" th:href="@{/logout}">🚪 Logout</a></li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- ══════════════ HERO ══════════════ -->
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-orb"></div>
+
+    <div class="container hero-content">
+        <div data-aos="fade-up" data-aos-duration="800">
+
+            <div class="hero-badge">
+                <span class="dot"></span>
+                Now delivering in your city
+            </div>
+
+            <h1>
+                Crave It.<br>
+                <em>Get It.</em><br>
+                Love It.
+            </h1>
+
+            <p>Premium food delivery from the best restaurants — hot, fresh, and at your door in 30 minutes.</p>
+
+            <div class="hero-cta">
+                <a href="#food" class="btn-hero-primary">
+                    <i class="bi bi-bag-heart-fill"></i>
+                    Order Now
+                </a>
+                <a href="#features" class="btn-hero-ghost">
+                    <i class="bi bi-play-circle"></i>
+                    How it works
+                </a>
+            </div>
+
+            <div class="hero-stats">
+                <div>
+                    <div class="stat-num">30<sup>min</sup></div>
+                    <div class="stat-label">Avg. delivery</div>
+                </div>
+                <div>
+                    <div class="stat-num">500<sup>+</sup></div>
+                    <div class="stat-label">Menu items</div>
+                </div>
+                <div>
+                    <div class="stat-num">4.9<sup>★</sup></div>
+                    <div class="stat-label">Customer rating</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<section class="py-5 bg-light">
+    <div class="container">
+
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold">What's on your mind?</h2>
+
+            <!-- View All -->
+            <a href="/allCategories" class="text-decoration-none fw-semibold">
+                View All →
+            </a>
+        </div>
+
+        <!-- Scroll Container -->
+        <div class="category-scroll d-flex">
+
+            <div th:each="c : ${categories}" class="text-center category-item">
+
+                <a th:href="@{/category/{id}(id=${c.id})}"
+                   class="text-decoration-none text-dark">
+
+                    <img th:src="@{'/category/image/' + ${c.id}}"
+                         class="rounded-circle shadow category-img">
+
+                    <p class="mt-2 fw-semibold" th:text="${c.categoryName}"></p>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+
+<!-- ══════════════ FOOD SECTION ══════════════ -->
+<section class="food-section" id="food">
+    <div class="container">
+
+        <div class="section-header text-center mb-5" data-aos="fade-up">
+            <div class="section-tag">🔥 Popular</div>
+            <h2>Today's Top Picks</h2>
+            <p>Fresh, flavourful, and just a tap away</p>
+        </div>
+
+        <div class="food-grid">
+            <div th:each="p : ${menuItems}" data-aos="fade-up" data-aos-duration="600">
+                <form th:action="@{/user/cart/addToCart}" method="post">
+                    <div class="food-card">
+                        <div class="food-img-wrap">
+                            <img th:src="@{/user/menuItem/image/{id}(id=${p.id})}"
+                                 class="food-img" alt="Food">
+                        </div>
+                        <div class="card-body-custom">
+                            <input type="hidden" name="user_id" th:value="${user.id}">
+                            <input type="hidden" name="menu_id" th:value="${p.id}">
+                            <input type="hidden" name="restaurant_id" th:value="${p.restaurant.id}">
+                            <div class="food-name" th:text="${p.name}"></div>
+                            <div class="food-price" th:text="'₹' + ${p.price}"></div>
+                            <button type="submit" class="add-cart-btn">
+                                <i class="bi bi-plus-lg"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ══════════════ FEATURES ══════════════ -->
+<section class="features-section" id="features">
+    <div class="container">
+
+        <div class="section-header text-center mb-5" data-aos="fade-up">
+            <div class="section-tag">✨ Why us</div>
+            <h2>The QuickBite Difference</h2>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-12 col-md-4" data-aos="fade-up" data-aos-delay="0">
+                <div class="feature-card">
+                    <div class="feature-icon-wrap">⚡</div>
+                    <div class="feature-title">Lightning Fast</div>
+                    <p class="feature-desc">30-minute delivery guaranteed or your next order is on us.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-card">
+                    <div class="feature-icon-wrap">🍔</div>
+                    <div class="feature-title">Always Fresh</div>
+                    <p class="feature-desc">100% hygienic, fresh ingredients — quality you can taste.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-card">
+                    <div class="feature-icon-wrap">💳</div>
+                    <div class="feature-title">Safe Payments</div>
+                    <p class="feature-desc">UPI, Cards, Net Banking — secure and instant every time.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ══════════════ FOOTER ══════════════ -->
+<footer>
+    <div class="container">
+        <div class="footer-brand">QuickBite</div>
+        <p>© 2026 QuickBite · Crafted with ❤️ for food lovers</p>
+    </div>
+</footer>
+
+<!-- ══════════════ PROFILE MODAL ══════════════ -->
+<div class="modal fade" id="myProfileModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">My Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="userid" th:value="${user.id}">
+                <div class="text-center mb-4">
+                    <img th:src="@{'/user/users/image/' + ${user.id}}"
+                         class="profile-avatar-modal" alt="Profile">
+                </div>
+                <div>
+                    <div class="profile-field-label">Name</div>
+                    <div class="profile-field-value" th:text="${user.name}"></div>
+                </div>
+                <div>
+                    <div class="profile-field-label">Email</div>
+                    <div class="profile-field-value" th:text="${user.email}"></div>
+                </div>
+                <div>
+                    <div class="profile-field-label">Contact Number</div>
+                    <div class="profile-field-value" th:text="${user.contactNo}"></div>
+                </div>
+                <div>
+                    <div class="profile-field-label">Address</div>
+                    <div class="profile-field-value" th:text="${user.address}"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#" data-bs-toggle="modal" data-bs-target="#updateProfile"
+                   class="btn-success-custom">Edit ✏️</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════ EDIT PROFILE MODAL ══════════════ -->
+<div class="modal fade" id="updateProfile">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content p-4">
+
+            <div class="modal-header ">
+                <h5 class="modal-title ">Edit Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form action="/user/updateProfile" th:object="${user}" method="post" enctype="multipart/form-data">
+
+                <div class="modal-body text-center mb-2">
+
+                    <input type="hidden" name="id" th:value="${user.id}">
+
+                    <img id="previewImage"
+                         th:src="@{'/user/users/image/' + ${user.id}}"
+                         alt="Profile Image"
+                         style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid #ff6b00;">
+
+                </div>
+
+                <!-- FILE INPUT -->
+                <div class="mb-3">
+                    <input type="file"
+                           name="image"
+                           accept="image/*"
+                           class="form-control"
+                           onchange="previewFile(event)">
+                </div>
+
+                <div class="mb-2">
+                    <label>Name</label>
+                    <input type="text"
+                           th:field="*{name}"
+                           class="form-control">
+                </div>
+
+                <div class="mb-2">
+                    <label>Email</label>
+                    <input type="email"
+                           th:field="*{email}"
+                           class="form-control">
+                </div>
+
+
+                <div class="mb-2">
+                    <label>Contact Number</label>
+                    <input type="text"
+                           th:field="*{contactNo}"
+                           class="form-control">
+                </div>
+
+                <div class="mb-2">
+                    <label>Address</label>
+                    <input type="text"
+                           th:field="*{address}"
+                           class="form-control">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Update</button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div id="popup" th:if="${success}">
+    <div class="popup-box">
+        <dotlottie-wc src="/images/Checked.lottie" autoplay loop></dotlottie-wc>
+        <h3>Added to Cart! 🎉</h3>
+        <p class="popup-sub">Your item has been added successfully.</p>
+        <button class="OkBtn" onclick="closeSuccessAnimation()">
+            <i class="bi bi-check-lg"></i> Ok
+        </button>
+    </div>
+</div>
+
+<!-- JS -->
+<script
+        src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.10/dist/dotlottie-wc.js"
+        type="module"
+></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({ once: true, duration: 700, offset: 60 });
+
+    function previewFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => document.getElementById('previewImage').src = e.target.result;
+        reader.readAsDataURL(file);
+    }
+
+    // Smooth anchor scroll
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', e => {
+            const target = document.querySelector(a.getAttribute('href'));
+            if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+        });
+    });
+
+    // Close mobile nav on item click
+    document.querySelectorAll('#navbarContent .dropdown-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const el = document.getElementById('navbarContent');
+            const bsCol = bootstrap.Collapse.getInstance(el);
+            if (bsCol) bsCol.hide();
+        });
+    });
+
+
+    function closeSuccessAnimation()
+    {
+        const close = document.getElementById('popup');
+        if (!close) return;
+        close.style.transition = 'opacity 0.3 ease';
+        close.style.opacity = '0';
+        setTimeout(() => { close.style.display = 'none'; window.location.href='/user/home';},100);
+    }
+</script>
+
+<script>
+    AOS.init();
+
+    const searchBox = document.getElementById("searchBox");
+    const resultsDiv = document.getElementById("results");
+
+    searchBox.addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            window.location.href = `/searchPage?keyword=${searchBox.value}`;
+        }
+    });
+
+    const blockedWords = ["shirt", "jeans", "pant", "clothes", "shoes"];
+
+    searchBox.addEventListener("input", function () {
+
+        let keyword = searchBox.value.trim();
+
+        if (keyword.length === 0) {
+            resultsDiv.style.display = "none";
+            return;
+        }
+
+        for (let word of blockedWords) {
+            if (keyword.toLowerCase().includes(word)) {
+                resultsDiv.innerHTML =
+                "<div style='padding:10px;color:red;'>Invalid search ❌</div>";
+                resultsDiv.style.display = "block";
+                return;
+            }
+        }
+
+        fetch(`/api/search?keyword=${keyword}`)
+            .then(res => res.json())
+            .then(data => {
+
+            resultsDiv.innerHTML = "";
+
+            if (data.length === 0) {
+                resultsDiv.innerHTML =
+                "<div style='padding:10px;'>No results found</div>";
+            } else {
+
+                data.forEach(item => {
+
+                    let div = document.createElement("div");
+
+                    div.style.display = "flex";
+                    div.style.alignItems = "center";
+                    div.style.padding = "10px";
+                    div.style.borderBottom = "1px solid #eee";
+                    div.style.cursor = "pointer";
+
+                    let imgSrc = item.imageUrl
+                        ? "data:image/jpeg;base64," + item.imageUrl
+                        : "https://via.placeholder.com/50";
+
+                    div.innerHTML = `
+                            <img src="${imgSrc}" width="40" height="40"
+                                 style="border-radius:5px; margin-right:10px;" />
+
+                            <div>
+                                <div style="font-weight:bold;">${item.name}</div>
+                                <div style="font-size:12px; color:gray;">
+                                    ${item.type}
+                                </div>
+                            </div>
+                        `;
+
+                    div.onclick = () => {
+                        window.location.href = `/searchPage?keyword=${item.name}`;
+                    };
+
+                    resultsDiv.appendChild(div);
+                });
+            }
+
+            resultsDiv.style.display = "block";
+        });
+    });
+
+
+    document.addEventListener("click", function (e) {
+        if (!searchBox.contains(e.target) && !resultsDiv.contains(e.target)) {
+            resultsDiv.style.display = "none";
+        }
+    });
+</script>
+
+</body>
+</html>
